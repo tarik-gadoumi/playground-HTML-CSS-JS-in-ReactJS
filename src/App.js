@@ -1,11 +1,11 @@
-// import parserBabel from 'https://unpkg.com/prettier@2.7.1/esm/parser-babel.mjs';
-// import parserHtml from 'https://unpkg.com/prettier@2.7.1/esm/parser-html.mjs';
-// import parserCss from 'https://unpkg.com/prettier@2.7.1/esm/parser-postcss.mjs';
+import parserBabel from 'https://unpkg.com/prettier@2.7.1/esm/parser-babel.mjs';
+import parserHtml from 'https://unpkg.com/prettier@2.7.1/esm/parser-html.mjs';
+import parserCss from 'https://unpkg.com/prettier@2.7.1/esm/parser-postcss.mjs';
 import codeFormat from './utils/codeFormat';
 import * as React from 'react';
-import parserBabel from './parsers/parserBabel';
-import parserHtml from './parsers/parserHtml';
-import parserCss from './parsers/parserPostCss';
+// import parserBabel from './parsers/parserBabel';
+// import parserHtml from './parsers/parserHtml';
+// import parserCss from './parsers/parserPostCss';
 import { createPortal } from 'react-dom';
 
 const CustomIframe = ({ children, ...props }) => {
@@ -37,15 +37,11 @@ function App() {
   const [js, setJs] = React.useState('');
   const [error, setError] = React.useState('');
   const [flag, setFlag] = React.useState(false);
+  console.log(flag);
   React.useEffect(() => {
     const iframe = document.getElementById('iFrame').contentWindow.document;
     const script = iframe.createElement('script');
-    //! ultra mega giga important
-    //* bcause each module has it's own scope
-    //* so const a when set to globalThis
-    //? a. saved in global env
-    //? b. remove script const a still living inside global env
-    //? c. that's why we setAttribute module bcause each module HAS IT'S OWNE SCOPE
+    // module have their own scope / to simulate BUG /try to remove type=module .then console.log a const or let
     script.setAttribute('type', 'module');
     script.onload = function () {
       console.log('Success!');
@@ -55,15 +51,17 @@ function App() {
     };
     if (flag) {
       script.textContent = js;
+      setFlag(false);
       script.onload();
     } else {
       script.onerror();
     }
+    console.log(flag);
+
     iframe.body.appendChild(script);
     return () => {
       iframe.body.removeChild(script);
     };
-
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [flag]);
 
@@ -88,7 +86,6 @@ function App() {
         setJs(codeFormat(js, 'babel', [parserBabel]));
       } catch (e) {
         setError(e.message);
-        setFlag(false);
       }
     }
   }
