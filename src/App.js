@@ -97,73 +97,97 @@ function App() {
     setError(null);
   }
   return (
-    <div onKeyDown={handleKeyDown} onKeyPress={handleKeyPress}>
-      <h3>HTML/CSS/JS Playground</h3>
-      <h3>Press Crtl+S to format your code !</h3>
-      <ul>
-        <li>
-          <a href="#html"> HTML</a>
-        </li>
-        <li>
-          <a href="#css">CSS</a>
-        </li>
-        <li>
-          <a href="#js">JS</a>
-        </li>
-      </ul>
-      <div style={{ display: 'flex', flexDirection: 'row' }}>
-        <div
-          style={{
-            display: 'flex',
-            flexDirection: 'column',
-            justifyContent: 'space-between',
-          }}
-        >
-          <p style={{ margin: '0' }}>
-            <textarea
-              style={{ width: '500px', height: '250px' }}
-              placeholder="Write your HTML here..."
-              value={html}
-              onChange={handleChangeHtml}
-              id="htmlTextarea"
-            ></textarea>
-          </p>
+    <>
+      <div
+        style={{
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          textAlign: 'center',
+          minHeight: '100vh',
+        }}
+      >
+        {' '}
+        <h3>HTML/CSS/JS Playground</h3>
+        <h3>Press Crtl+S to format your code !</h3>
+        <ul>
+          <li>
+            <a href="#html"> HTML</a>
+          </li>
+          <li>
+            <a href="#css">CSS</a>
+          </li>
+          <li>
+            <a href="#js">JS</a>
+          </li>
+        </ul>
+      </div>
 
-          <p style={{ margin: '0' }}>
-            <textarea
-              style={{ width: '500px', height: '250px' }}
-              placeholder="Write your CSS here..."
-              value={css}
-              onChange={handleChangeCss}
-              id="cssTextarea"
-            ></textarea>
-          </p>
-
-          <p style={{ margin: '0' }}>
-            <textarea
-              style={{ width: '500px', height: '250px' }}
-              placeholder="Write your Javascript here..."
-              value={js}
-              onChange={handleChangeJs}
-              id="jsTextarea"
-            ></textarea>
-          </p>
-          <div style={{ color: 'red' }}> {error ? error : null}</div>
-        </div>
-
-        <div>
-          <CustomIframe
+      <div
+        onKeyDown={handleKeyDown}
+        onKeyPress={handleKeyPress}
+        style={{
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          textAlign: 'center',
+          minHeight: '100vh',
+        }}
+      >
+        <div style={{ display: 'flex', flexDirection: 'row' }}>
+          <div
             style={{
-              border: '3px solid deeppink',
+              display: 'flex',
+              flexDirection: 'column',
+              justifyContent: 'space-between',
             }}
-            title="A custom made iframe"
           >
-            {html}
-            <style>{css}</style>
-          </CustomIframe>
+            <p style={{ margin: '0' }}>
+              <textarea
+                style={{ width: '500px', height: '250px' }}
+                placeholder="Write your HTML here..."
+                value={html}
+                onChange={handleChangeHtml}
+                id="htmlTextarea"
+              ></textarea>
+            </p>
+
+            <p style={{ margin: '0' }}>
+              <textarea
+                style={{ width: '500px', height: '250px' }}
+                placeholder="Write your CSS here..."
+                value={css}
+                onChange={handleChangeCss}
+                id="cssTextarea"
+              ></textarea>
+            </p>
+
+            <p style={{ margin: '0' }}>
+              <textarea
+                style={{ width: '500px', height: '250px' }}
+                placeholder="Write your Javascript here..."
+                value={js}
+                onChange={handleChangeJs}
+                id="jsTextarea"
+              ></textarea>
+            </p>
+            <div style={{ color: 'red' }}> {error ? error : null}</div>
+          </div>
+
+          <div>
+            <CustomIframe
+              style={{
+                border: '3px solid deeppink',
+              }}
+              title="A custom made iframe"
+            >
+              {html}
+              <style>{css}</style>
+            </CustomIframe>
+          </div>
         </div>
       </div>
-    </div>
+    </>
   );
 }
 
