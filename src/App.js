@@ -21,7 +21,7 @@ const CustomIframe = ({ children, ...props }) => {
     <iframe
       id="iFrame"
       width={600}
-      height={800}
+      height={769}
       title="code mirror"
       {...props}
       ref={setContentRef}
