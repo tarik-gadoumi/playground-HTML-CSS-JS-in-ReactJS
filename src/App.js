@@ -8,15 +8,39 @@ import * as React from 'react';
 // import parserCss from './parsers/parserPostCss';
 import { createPortal } from 'react-dom';
 
-const CustomIframe = ({ children, ...props }) => {
+const CustomIframe = ({ children, setFlag, flag, js, ...props }) => {
   const [contentRef, setContentRef] = React.useState(null);
   const mountNode = contentRef?.contentWindow?.document?.body;
+
   const elements = React.Children.map(children, (child) => {
     if (typeof child !== 'string') {
       return child;
     }
     return <div dangerouslySetInnerHTML={{ __html: child }} />;
   });
+
+  React.useEffect(() => {
+    const windowIframe = document.getElementById('iFrame').contentWindow;
+    const iframe = windowIframe.document;
+    const script = iframe.createElement('script');
+    // module have their own scope / to simulate BUG /try to remove type=module .then console.log a const or let
+    script.setAttribute('type', 'module');
+    script.onload = function () {
+      setFlag(false);
+    };
+
+    if (flag) {
+      script.onload();
+    } else {
+      script.textContent = js;
+    }
+    iframe.body.appendChild(script);
+    return () => {
+      iframe.body.removeChild(script);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [flag]);
+
   return (
     <iframe
       id="iFrame"
@@ -30,40 +54,12 @@ const CustomIframe = ({ children, ...props }) => {
     </iframe>
   );
 };
-
 function App() {
   const [html, setHtml] = React.useState('');
   const [css, setCss] = React.useState('');
   const [js, setJs] = React.useState('');
   const [error, setError] = React.useState('');
   const [flag, setFlag] = React.useState(false);
-  console.log(flag);
-  React.useEffect(() => {
-    const iframe = document.getElementById('iFrame').contentWindow.document;
-    const script = iframe.createElement('script');
-    // module have their own scope / to simulate BUG /try to remove type=module .then console.log a const or let
-    script.setAttribute('type', 'module');
-    script.onload = function () {
-      console.log('Success!');
-    };
-    script.onerror = function () {
-      console.log('Error!');
-    };
-    if (flag) {
-      script.textContent = js;
-      setFlag(false);
-      script.onload();
-    } else {
-      script.onerror();
-    }
-    console.log(flag);
-
-    iframe.body.appendChild(script);
-    return () => {
-      iframe.body.removeChild(script);
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [flag]);
 
   function handleChangeHtml(e) {
     setHtml(e.target.value);
@@ -105,8 +101,10 @@ function App() {
         }}
       >
         {' '}
-        <h3>HTML/CSS/JS Playground</h3>
-        <h3>Press Crtl+S to format your code !</h3>
+        <div>
+          <h3>HTML/CSS/JS Playground</h3>
+          <h3>Press Crtl+S to format your code !</h3>
+        </div>
         <ul>
           <li>
             <a href="#html"> HTML</a>
@@ -177,6 +175,9 @@ function App() {
                 border: '3px solid deeppink',
               }}
               title="A custom made iframe"
+              js={js}
+              flag={flag}
+              setFlag={setFlag}
             >
               {html}
               <style>{css}</style>
